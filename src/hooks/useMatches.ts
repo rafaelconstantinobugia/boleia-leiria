@@ -79,6 +79,8 @@ export function useCreateMatch() {
   });
 }
 
+type MatchStatus = 'PROPOSED' | 'CONFIRMED' | 'CANCELLED' | 'DONE';
+
 export function useUpdateMatchStatus() {
   const queryClient = useQueryClient();
 
