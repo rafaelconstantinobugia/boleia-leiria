@@ -52,7 +52,7 @@ export function TermsCheckbox({ control, name }: TermsCheckboxProps) {
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[80vh]">
                   <DialogHeader>
-                    <DialogTitle>Termos e Condições</DialogTitle>
+                    <DialogTitle>Termos e Condições de Utilização de Dados de Voluntários</DialogTitle>
                   </DialogHeader>
                   <ScrollArea className="h-[60vh] pr-4">
                     <div className="space-y-4 text-sm text-muted-foreground">
