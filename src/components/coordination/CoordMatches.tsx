@@ -197,17 +197,6 @@ Coordenação: ${match.coordinator_name} (${match.coordinator_phone})`;
                     )}
 
                     {match.status === 'CONFIRMED' && (
-                      <Button
-                        size="sm"
-                        onClick={() => handleStatusChange(match.id, 'IN_PROGRESS')}
-                        disabled={updateStatus.isPending}
-                      >
-                        <Play className="mr-2 h-4 w-4" />
-                        Em Curso
-                      </Button>
-                    )}
-
-                    {(match.status === 'CONFIRMED' || match.status === 'IN_PROGRESS') && (
                       <>
                         <Button
                           size="sm"

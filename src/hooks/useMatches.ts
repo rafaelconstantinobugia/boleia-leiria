@@ -109,9 +109,6 @@ export function useUpdateMatchStatus() {
       if (status === 'CONFIRMED') {
         await supabase.from('ride_requests').update({ status: 'CONFIRMED' }).eq('id', match.request_id);
         await supabase.from('ride_offers').update({ status: 'RESERVED' }).eq('id', match.offer_id);
-      } else if (status === 'IN_PROGRESS') {
-        await supabase.from('ride_requests').update({ status: 'IN_PROGRESS' }).eq('id', match.request_id);
-        await supabase.from('ride_offers').update({ status: 'IN_PROGRESS' }).eq('id', match.offer_id);
       } else if (status === 'DONE') {
         await supabase.from('ride_requests').update({ status: 'DONE' }).eq('id', match.request_id);
         await supabase.from('ride_offers').update({ status: 'DONE' }).eq('id', match.offer_id);
