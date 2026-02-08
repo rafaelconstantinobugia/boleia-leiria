@@ -419,6 +419,8 @@ export default function NovaOferta() {
             )}
           />
 
+          <TermsCheckbox control={form.control} name="accept_terms" />
+
           <Button
             type="submit"
             className="w-full"
