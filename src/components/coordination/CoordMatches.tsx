@@ -27,7 +27,7 @@ export function CoordMatches() {
 
   const updateStatus = useUpdateMatchStatus();
 
-  async function handleStatusChange(matchId: string, newStatus: string) {
+  async function handleStatusChange(matchId: string, newStatus: 'PROPOSED' | 'CONFIRMED' | 'CANCELLED' | 'DONE') {
     try {
       await updateStatus.mutateAsync({ matchId, status: newStatus });
       toast({

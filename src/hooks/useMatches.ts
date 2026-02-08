@@ -85,7 +85,7 @@ export function useUpdateMatchStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ matchId, status }: { matchId: string; status: string }) => {
+    mutationFn: async ({ matchId, status }: { matchId: string; status: MatchStatus }) => {
       // Buscar match atual
       const { data: match, error: fetchError } = await supabase
         .from('matches')

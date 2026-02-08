@@ -20,7 +20,7 @@ export function useRideRequests(filters?: {
         .order('created_at', { ascending: false });
 
       if (filters?.status && filters.status !== 'ALL') {
-        query = query.eq('status', filters.status);
+        query = query.eq('status', filters.status as 'NEW' | 'TRIAGE' | 'CONFIRMED' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED');
       }
 
       if (filters?.search) {
