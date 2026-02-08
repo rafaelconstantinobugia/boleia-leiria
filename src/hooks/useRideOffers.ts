@@ -39,14 +39,15 @@ export function useRideOfferByToken(token: string) {
   return useQuery({
     queryKey: ['ride_offer', 'token', token],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('ride_offers')
-        .select('*')
-        .eq('edit_token', token)
-        .maybeSingle();
+      // Use edge function to validate token securely (bypasses RLS)
+      const response = await supabase.functions.invoke('get-offer-by-token', {
+        body: { token },
+      });
 
-      if (error) throw error;
-      return data as RideOffer | null;
+      if (response.error) throw response.error;
+      if (response.data?.error) throw new Error(response.data.error);
+      
+      return response.data?.data as RideOffer | null;
     },
     enabled: !!token,
   });
