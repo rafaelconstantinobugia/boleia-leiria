@@ -115,6 +115,9 @@ export const rideOfferSchema = z.object({
   equipment: z.array(z.string()).optional(),
   notes: z.string().max(500, 'Notas muito longas').optional(),
   honeypot: z.string().max(0, 'Campo inválido').optional(),
+  accept_terms: z.boolean().refine((val) => val === true, {
+    message: 'Deve aceitar os termos e condições',
+  }),
 }).refine((data) => data.time_window_end > data.time_window_start, {
   message: 'Data de fim deve ser posterior à data de início',
   path: ['time_window_end'],
