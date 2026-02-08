@@ -51,6 +51,7 @@ export default function NovoPedido() {
       special_needs: [],
       notes: '',
       honeypot: '',
+      accept_terms: false,
     },
   });
 
