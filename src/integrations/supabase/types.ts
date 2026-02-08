@@ -14,7 +14,212 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      coordinator_logs: {
+        Row: {
+          action: string
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          metadata: Json | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          metadata?: Json | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          metadata?: Json | null
+        }
+        Relationships: []
+      }
+      matches: {
+        Row: {
+          coordinator_name: string
+          coordinator_phone: string
+          created_at: string
+          id: string
+          notes: string | null
+          offer_id: string
+          request_id: string
+          status: Database["public"]["Enums"]["match_status"]
+          updated_at: string
+        }
+        Insert: {
+          coordinator_name: string
+          coordinator_phone: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          offer_id: string
+          request_id: string
+          status?: Database["public"]["Enums"]["match_status"]
+          updated_at?: string
+        }
+        Update: {
+          coordinator_name?: string
+          coordinator_phone?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          offer_id?: string
+          request_id?: string
+          status?: Database["public"]["Enums"]["match_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matches_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "ride_offers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matches_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "ride_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ride_offers: {
+        Row: {
+          can_go_distance: Database["public"]["Enums"]["distance_availability"]
+          created_at: string
+          departure_area_text: string
+          driver_name: string
+          driver_phone: string
+          edit_token: string
+          equipment: string[] | null
+          id: string
+          notes: string | null
+          seats_available: number
+          status: Database["public"]["Enums"]["offer_status"]
+          time_window_end: string
+          time_window_start: string
+          updated_at: string
+          vehicle_type: string
+        }
+        Insert: {
+          can_go_distance?: Database["public"]["Enums"]["distance_availability"]
+          created_at?: string
+          departure_area_text: string
+          driver_name: string
+          driver_phone: string
+          edit_token?: string
+          equipment?: string[] | null
+          id?: string
+          notes?: string | null
+          seats_available?: number
+          status?: Database["public"]["Enums"]["offer_status"]
+          time_window_end: string
+          time_window_start: string
+          updated_at?: string
+          vehicle_type: string
+        }
+        Update: {
+          can_go_distance?: Database["public"]["Enums"]["distance_availability"]
+          created_at?: string
+          departure_area_text?: string
+          driver_name?: string
+          driver_phone?: string
+          edit_token?: string
+          equipment?: string[] | null
+          id?: string
+          notes?: string | null
+          seats_available?: number
+          status?: Database["public"]["Enums"]["offer_status"]
+          time_window_end?: string
+          time_window_start?: string
+          updated_at?: string
+          vehicle_type?: string
+        }
+        Relationships: []
+      }
+      ride_requests: {
+        Row: {
+          created_at: string
+          dropoff_lat: number | null
+          dropoff_lng: number | null
+          dropoff_location_text: string
+          edit_token: string
+          id: string
+          matched_offer_id: string | null
+          notes: string | null
+          passengers: number
+          pickup_lat: number | null
+          pickup_lng: number | null
+          pickup_location_text: string
+          requester_name: string
+          requester_phone: string
+          special_needs: string[] | null
+          status: Database["public"]["Enums"]["request_status"]
+          updated_at: string
+          window_end: string
+          window_start: string
+        }
+        Insert: {
+          created_at?: string
+          dropoff_lat?: number | null
+          dropoff_lng?: number | null
+          dropoff_location_text: string
+          edit_token?: string
+          id?: string
+          matched_offer_id?: string | null
+          notes?: string | null
+          passengers?: number
+          pickup_lat?: number | null
+          pickup_lng?: number | null
+          pickup_location_text: string
+          requester_name: string
+          requester_phone: string
+          special_needs?: string[] | null
+          status?: Database["public"]["Enums"]["request_status"]
+          updated_at?: string
+          window_end: string
+          window_start: string
+        }
+        Update: {
+          created_at?: string
+          dropoff_lat?: number | null
+          dropoff_lng?: number | null
+          dropoff_location_text?: string
+          edit_token?: string
+          id?: string
+          matched_offer_id?: string | null
+          notes?: string | null
+          passengers?: number
+          pickup_lat?: number | null
+          pickup_lng?: number | null
+          pickup_location_text?: string
+          requester_name?: string
+          requester_phone?: string
+          special_needs?: string[] | null
+          status?: Database["public"]["Enums"]["request_status"]
+          updated_at?: string
+          window_end?: string
+          window_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_matched_offer"
+            columns: ["matched_offer_id"]
+            isOneToOne: false
+            referencedRelation: "ride_offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +228,21 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      distance_availability: "LOCAL" | "UP_TO_1H" | "ANY"
+      match_status: "PROPOSED" | "CONFIRMED" | "CANCELLED" | "DONE"
+      offer_status:
+        | "AVAILABLE"
+        | "RESERVED"
+        | "IN_PROGRESS"
+        | "DONE"
+        | "CANCELLED"
+      request_status:
+        | "NEW"
+        | "TRIAGE"
+        | "CONFIRMED"
+        | "IN_PROGRESS"
+        | "DONE"
+        | "CANCELLED"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +369,24 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      distance_availability: ["LOCAL", "UP_TO_1H", "ANY"],
+      match_status: ["PROPOSED", "CONFIRMED", "CANCELLED", "DONE"],
+      offer_status: [
+        "AVAILABLE",
+        "RESERVED",
+        "IN_PROGRESS",
+        "DONE",
+        "CANCELLED",
+      ],
+      request_status: [
+        "NEW",
+        "TRIAGE",
+        "CONFIRMED",
+        "IN_PROGRESS",
+        "DONE",
+        "CANCELLED",
+      ],
+    },
   },
 } as const
