@@ -74,6 +74,9 @@ export const rideRequestSchema = z.object({
   special_needs: z.array(z.string()).optional(),
   notes: z.string().max(500, 'Notas muito longas').optional(),
   honeypot: z.string().max(0, 'Campo inválido').optional(),
+  accept_terms: z.boolean().refine((val) => val === true, {
+    message: 'Deve aceitar os termos e condições',
+  }),
 }).refine((data) => data.window_end > data.window_start, {
   message: 'Data de fim deve ser posterior à data de início',
   path: ['window_end'],
