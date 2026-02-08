@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
-import { Loader2, Phone, MapPin, Users, Car, Copy, CheckCircle, Play, XCircle } from 'lucide-react';
+import { Loader2, Phone, MapPin, Users, Car, Copy, CheckCircle, XCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
