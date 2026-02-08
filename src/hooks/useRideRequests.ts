@@ -14,8 +14,9 @@ export function useRideRequests(filters?: {
   return useQuery({
     queryKey: ['ride_requests', filters],
     queryFn: async () => {
+      // Use the public view that excludes edit_token
       let query = supabase
-        .from('ride_requests')
+        .from('ride_requests_public')
         .select('*')
         .order('created_at', { ascending: false });
 
