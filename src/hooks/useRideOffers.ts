@@ -14,8 +14,9 @@ export function useRideOffers(filters?: {
   return useQuery({
     queryKey: ['ride_offers', filters],
     queryFn: async () => {
+      // Use the public view that excludes edit_token
       let query = supabase
-        .from('ride_offers')
+        .from('ride_offers_public')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -38,14 +39,15 @@ export function useRideOfferByToken(token: string) {
   return useQuery({
     queryKey: ['ride_offer', 'token', token],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('ride_offers')
-        .select('*')
-        .eq('edit_token', token)
-        .maybeSingle();
+      // Use edge function to validate token securely (bypasses RLS)
+      const response = await supabase.functions.invoke('get-offer-by-token', {
+        body: { token },
+      });
 
-      if (error) throw error;
-      return data as RideOffer | null;
+      if (response.error) throw response.error;
+      if (response.data?.error) throw new Error(response.data.error);
+      
+      return response.data?.data as RideOffer | null;
     },
     enabled: !!token,
   });
@@ -129,18 +131,18 @@ export function useCompatibleOffers(requestId?: string) {
     queryFn: async () => {
       if (!requestId) return [];
 
-      // Buscar pedido
+      // Buscar pedido usando a view pública
       const { data: request, error: requestError } = await supabase
-        .from('ride_requests')
+        .from('ride_requests_public')
         .select('*')
         .eq('id', requestId)
         .single();
 
       if (requestError) throw requestError;
 
-      // Buscar ofertas disponíveis com janela temporal sobreposta
+      // Buscar ofertas disponíveis com janela temporal sobreposta usando a view pública
       const { data: offers, error: offersError } = await supabase
-        .from('ride_offers')
+        .from('ride_offers_public')
         .select('*')
         .eq('status', 'AVAILABLE')
         .gte('seats_available', request.passengers)
