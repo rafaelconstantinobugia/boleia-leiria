@@ -131,18 +131,18 @@ export function useCompatibleOffers(requestId?: string) {
     queryFn: async () => {
       if (!requestId) return [];
 
-      // Buscar pedido
+      // Buscar pedido usando a view pública
       const { data: request, error: requestError } = await supabase
-        .from('ride_requests')
+        .from('ride_requests_public')
         .select('*')
         .eq('id', requestId)
         .single();
 
       if (requestError) throw requestError;
 
-      // Buscar ofertas disponíveis com janela temporal sobreposta
+      // Buscar ofertas disponíveis com janela temporal sobreposta usando a view pública
       const { data: offers, error: offersError } = await supabase
-        .from('ride_offers')
+        .from('ride_offers_public')
         .select('*')
         .eq('status', 'AVAILABLE')
         .gte('seats_available', request.passengers)

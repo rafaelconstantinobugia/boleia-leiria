@@ -2,3 +2,9 @@ project_id = "jlaurptgrpuktmzdpdii"
 
 [functions.verify-admin-pin]
 verify_jwt = false
+
+[functions.get-request-by-token]
+verify_jwt = false
+
+[functions.get-offer-by-token]
+verify_jwt = false
