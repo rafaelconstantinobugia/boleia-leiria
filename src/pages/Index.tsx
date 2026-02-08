@@ -41,12 +41,22 @@ const Index = () => {
           </Button>
         </div>
 
-        <Link
-          to="/coordenacao"
-          className="text-sm text-muted-foreground underline-offset-4 hover:underline"
-        >
-          Área de Coordenação
-        </Link>
+        <div className="flex flex-col items-center gap-2">
+          <Link
+            to="/coordenacao"
+            className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+          >
+            Área de Coordenação
+          </Link>
+          <a
+            href="/termos_e_condicoes.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+          >
+            Termos e Condições
+          </a>
+        </div>
       </div>
     </PageLayout>
   );
