@@ -31,6 +31,7 @@ import { useCreateRideRequest } from '@/hooks/useRideRequests';
 import { rideRequestSchema, type RideRequestFormData } from '@/lib/validation';
 import { SPECIAL_NEEDS_OPTIONS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
+import { TermsCheckbox } from '@/components/TermsCheckbox';
 
 export default function NovoPedido() {
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ export default function NovoPedido() {
       special_needs: [],
       notes: '',
       honeypot: '',
+      accept_terms: false,
     },
   });
 
@@ -369,6 +371,8 @@ export default function NovoPedido() {
               </FormItem>
             )}
           />
+
+          <TermsCheckbox control={form.control} name="accept_terms" />
 
           <Button
             type="submit"

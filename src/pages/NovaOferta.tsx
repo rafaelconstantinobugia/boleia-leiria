@@ -38,6 +38,7 @@ import { useCreateRideOffer } from '@/hooks/useRideOffers';
 import { rideOfferSchema, type RideOfferFormData } from '@/lib/validation';
 import { EQUIPMENT_OPTIONS, VEHICLE_TYPES, DISTANCE_LABELS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
+import { TermsCheckbox } from '@/components/TermsCheckbox';
 
 export default function NovaOferta() {
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ export default function NovaOferta() {
       equipment: [],
       notes: '',
       honeypot: '',
+      accept_terms: false,
     },
   });
 
@@ -416,6 +418,8 @@ export default function NovaOferta() {
               </FormItem>
             )}
           />
+
+          <TermsCheckbox control={form.control} name="accept_terms" />
 
           <Button
             type="submit"
