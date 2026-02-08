@@ -59,6 +59,7 @@ export default function NovaOferta() {
       equipment: [],
       notes: '',
       honeypot: '',
+      accept_terms: false,
     },
   });
 
