@@ -31,6 +31,7 @@ import { useCreateRideRequest } from '@/hooks/useRideRequests';
 import { rideRequestSchema, type RideRequestFormData } from '@/lib/validation';
 import { SPECIAL_NEEDS_OPTIONS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
+import { TermsCheckbox } from '@/components/TermsCheckbox';
 
 export default function NovoPedido() {
   const navigate = useNavigate();
