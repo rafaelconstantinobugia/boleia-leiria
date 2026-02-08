@@ -84,10 +84,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "matches_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "ride_offers_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "matches_request_id_fkey"
             columns: ["request_id"]
             isOneToOne: false
             referencedRelation: "ride_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matches_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "ride_requests_public"
             referencedColumns: ["id"]
           },
         ]
@@ -218,11 +232,152 @@ export type Database = {
             referencedRelation: "ride_offers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_matched_offer"
+            columns: ["matched_offer_id"]
+            isOneToOne: false
+            referencedRelation: "ride_offers_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
     Views: {
-      [_ in never]: never
+      ride_offers_public: {
+        Row: {
+          can_go_distance:
+            | Database["public"]["Enums"]["distance_availability"]
+            | null
+          created_at: string | null
+          departure_area_text: string | null
+          driver_name: string | null
+          driver_phone: string | null
+          equipment: string[] | null
+          id: string | null
+          notes: string | null
+          seats_available: number | null
+          status: Database["public"]["Enums"]["offer_status"] | null
+          time_window_end: string | null
+          time_window_start: string | null
+          updated_at: string | null
+          vehicle_type: string | null
+        }
+        Insert: {
+          can_go_distance?:
+            | Database["public"]["Enums"]["distance_availability"]
+            | null
+          created_at?: string | null
+          departure_area_text?: string | null
+          driver_name?: string | null
+          driver_phone?: string | null
+          equipment?: string[] | null
+          id?: string | null
+          notes?: string | null
+          seats_available?: number | null
+          status?: Database["public"]["Enums"]["offer_status"] | null
+          time_window_end?: string | null
+          time_window_start?: string | null
+          updated_at?: string | null
+          vehicle_type?: string | null
+        }
+        Update: {
+          can_go_distance?:
+            | Database["public"]["Enums"]["distance_availability"]
+            | null
+          created_at?: string | null
+          departure_area_text?: string | null
+          driver_name?: string | null
+          driver_phone?: string | null
+          equipment?: string[] | null
+          id?: string | null
+          notes?: string | null
+          seats_available?: number | null
+          status?: Database["public"]["Enums"]["offer_status"] | null
+          time_window_end?: string | null
+          time_window_start?: string | null
+          updated_at?: string | null
+          vehicle_type?: string | null
+        }
+        Relationships: []
+      }
+      ride_requests_public: {
+        Row: {
+          created_at: string | null
+          dropoff_lat: number | null
+          dropoff_lng: number | null
+          dropoff_location_text: string | null
+          id: string | null
+          matched_offer_id: string | null
+          notes: string | null
+          passengers: number | null
+          pickup_lat: number | null
+          pickup_lng: number | null
+          pickup_location_text: string | null
+          requester_name: string | null
+          requester_phone: string | null
+          special_needs: string[] | null
+          status: Database["public"]["Enums"]["request_status"] | null
+          updated_at: string | null
+          window_end: string | null
+          window_start: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          dropoff_lat?: number | null
+          dropoff_lng?: number | null
+          dropoff_location_text?: string | null
+          id?: string | null
+          matched_offer_id?: string | null
+          notes?: string | null
+          passengers?: number | null
+          pickup_lat?: number | null
+          pickup_lng?: number | null
+          pickup_location_text?: string | null
+          requester_name?: string | null
+          requester_phone?: string | null
+          special_needs?: string[] | null
+          status?: Database["public"]["Enums"]["request_status"] | null
+          updated_at?: string | null
+          window_end?: string | null
+          window_start?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          dropoff_lat?: number | null
+          dropoff_lng?: number | null
+          dropoff_location_text?: string | null
+          id?: string | null
+          matched_offer_id?: string | null
+          notes?: string | null
+          passengers?: number | null
+          pickup_lat?: number | null
+          pickup_lng?: number | null
+          pickup_location_text?: string | null
+          requester_name?: string | null
+          requester_phone?: string | null
+          special_needs?: string[] | null
+          status?: Database["public"]["Enums"]["request_status"] | null
+          updated_at?: string | null
+          window_end?: string | null
+          window_start?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_matched_offer"
+            columns: ["matched_offer_id"]
+            isOneToOne: false
+            referencedRelation: "ride_offers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_matched_offer"
+            columns: ["matched_offer_id"]
+            isOneToOne: false
+            referencedRelation: "ride_offers_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       [_ in never]: never
