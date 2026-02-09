@@ -207,7 +207,7 @@ export default function NovoPedido() {
                             field.onChange(date);
                           }
                         }}
-                        disabled={(date) => date < new Date()}
+                        disabled={(date) => startOfDay(date) < startOfDay(new Date())}
                         initialFocus
                       />
                       {windowStartDate && (
