@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
+import { format, startOfDay } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { CalendarIcon, Loader2 } from 'lucide-react';
 
