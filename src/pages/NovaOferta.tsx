@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
+import { format, startOfDay } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { CalendarIcon, Loader2 } from 'lucide-react';
 
@@ -274,7 +274,7 @@ export default function NovaOferta() {
                             field.onChange(date);
                           }
                         }}
-                        disabled={(date) => date < new Date()}
+                        disabled={(date) => startOfDay(date) < startOfDay(new Date())}
                         initialFocus
                       />
                       {windowStartDate && (
@@ -337,7 +337,7 @@ export default function NovaOferta() {
                         }}
                         disabled={(date) => {
                           const start = form.getValues('time_window_start');
-                          return date < (start || new Date());
+                          return startOfDay(date) < startOfDay(start || new Date());
                         }}
                         initialFocus
                       />
