@@ -337,7 +337,7 @@ export default function NovaOferta() {
                         }}
                         disabled={(date) => {
                           const start = form.getValues('time_window_start');
-                          return date < (start || new Date());
+                          return startOfDay(date) < startOfDay(start || new Date());
                         }}
                         initialFocus
                       />

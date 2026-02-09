@@ -270,7 +270,7 @@ export default function NovoPedido() {
                         }}
                         disabled={(date) => {
                           const start = form.getValues('window_start');
-                          return date < (start || new Date());
+                          return startOfDay(date) < startOfDay(start || new Date());
                         }}
                         initialFocus
                       />
