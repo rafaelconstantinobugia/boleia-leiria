@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { normalizePhone } from '@/lib/validation';
+import { syncToGoogleSheets } from '@/lib/syncGoogleSheets';
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
 type RideOffer = Tables<'ride_offers'>;
@@ -70,6 +71,7 @@ export function useCreateRideOffer() {
         .single();
 
       if (error) throw error;
+      syncToGoogleSheets('offer', result as Record<string, unknown>);
       return result as RideOffer;
     },
     onSuccess: () => {
@@ -96,6 +98,7 @@ export function useUpdateRideOffer() {
         .single();
 
       if (error) throw error;
+      syncToGoogleSheets('offer', result as Record<string, unknown>);
       return result as RideOffer;
     },
     onSuccess: () => {
@@ -117,6 +120,7 @@ export function useCancelRideOffer() {
         .single();
 
       if (error) throw error;
+      syncToGoogleSheets('offer', data as Record<string, unknown>);
       return data as RideOffer;
     },
     onSuccess: () => {
