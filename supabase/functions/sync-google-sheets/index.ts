@@ -160,7 +160,7 @@ Deno.serve(async (req) => {
       // Sync requests
       for (const r of requests || []) {
         try {
-          const payload = buildRequestPayload(r as Record<string, unknown>, apiKey, adminBaseUrl)
+          const payload = buildUnifiedPayload('PEDIDO', r as Record<string, unknown>, apiKey, adminBaseUrl)
           await fetchWithRetry(webhookUrl, payload)
           await supabase.from('ride_requests').update({ sheets_synced_at: now }).eq('id', r.id)
           syncedRequests++
@@ -172,7 +172,7 @@ Deno.serve(async (req) => {
       // Sync offers
       for (const o of offers || []) {
         try {
-          const payload = buildOfferPayload(o as Record<string, unknown>, apiKey, adminBaseUrl)
+          const payload = buildUnifiedPayload('OFERTA', o as Record<string, unknown>, apiKey, adminBaseUrl)
           await fetchWithRetry(webhookUrl, payload)
           await supabase.from('ride_offers').update({ sheets_synced_at: now }).eq('id', o.id)
           syncedOffers++
@@ -184,7 +184,7 @@ Deno.serve(async (req) => {
       // Sync matches
       for (const m of matchRows || []) {
         try {
-          const payload = buildMatchPayload(m as Record<string, unknown>, apiKey, adminBaseUrl)
+          const payload = buildUnifiedPayload('MATCH', m as Record<string, unknown>, apiKey, adminBaseUrl)
           await fetchWithRetry(webhookUrl, payload)
           syncedMatches++
         } catch (e) {
