@@ -120,6 +120,7 @@ export function useCancelRideOffer() {
         .single();
 
       if (error) throw error;
+      syncToGoogleSheets('offer', data as Record<string, unknown>);
       return data as RideOffer;
     },
     onSuccess: () => {
