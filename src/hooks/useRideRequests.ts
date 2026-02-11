@@ -120,6 +120,7 @@ export function useCancelRideRequest() {
         .single();
 
       if (error) throw error;
+      syncToGoogleSheets('request', data as Record<string, unknown>);
       return data as RideRequest;
     },
     onSuccess: () => {
