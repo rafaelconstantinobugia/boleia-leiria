@@ -205,11 +205,11 @@ Deno.serve(async (req) => {
     let payload: Record<string, unknown>
 
     if (type === 'offer') {
-      payload = buildOfferPayload(record, apiKey, adminBaseUrl)
+      payload = buildUnifiedPayload('OFERTA', record, apiKey, adminBaseUrl)
     } else if (type === 'request') {
-      payload = buildRequestPayload(record, apiKey, adminBaseUrl)
+      payload = buildUnifiedPayload('PEDIDO', record, apiKey, adminBaseUrl)
     } else if (type === 'match') {
-      payload = buildMatchPayload(record, apiKey, adminBaseUrl)
+      payload = buildUnifiedPayload('MATCH', record, apiKey, adminBaseUrl)
     } else {
       throw new Error(`Unknown type: ${type}`)
     }
