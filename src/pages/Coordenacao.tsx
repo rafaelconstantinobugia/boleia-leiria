@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Loader2, Lock, LogOut } from 'lucide-react';
+import { Loader2, Lock, LogOut, RefreshCw } from 'lucide-react';
 
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Button } from '@/components/ui/button';
@@ -11,12 +11,53 @@ import { useAdmin } from '@/contexts/AdminContext';
 import { CoordPedidos } from '@/components/coordination/CoordPedidos';
 import { CoordOfertas } from '@/components/coordination/CoordOfertas';
 import { CoordMatches } from '@/components/coordination/CoordMatches';
+import { supabase } from '@/integrations/supabase/client';
+import { syncToGoogleSheets } from '@/lib/syncGoogleSheets';
 
 export default function Coordenacao() {
   const { isAdmin, login, logout } = useAdmin();
   const { toast } = useToast();
   const [pin, setPin] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  async function handleForceSync() {
+    setIsSyncing(true);
+    try {
+      // Fetch all offers and requests
+      const [offersRes, requestsRes] = await Promise.all([
+        supabase.from('ride_offers_public').select('*'),
+        supabase.from('ride_requests_public').select('*'),
+      ]);
+
+      if (offersRes.error) throw offersRes.error;
+      if (requestsRes.error) throw requestsRes.error;
+
+      const promises: Promise<void>[] = [];
+      for (const offer of offersRes.data || []) {
+        promises.push(syncToGoogleSheets('offer', offer as Record<string, unknown>));
+      }
+      for (const request of requestsRes.data || []) {
+        promises.push(syncToGoogleSheets('request', request as Record<string, unknown>));
+      }
+
+      await Promise.all(promises);
+
+      toast({
+        title: 'Sincronização concluída',
+        description: `${offersRes.data?.length || 0} ofertas e ${requestsRes.data?.length || 0} pedidos sincronizados.`,
+      });
+    } catch (error) {
+      console.error('Sync error:', error);
+      toast({
+        title: 'Erro na sincronização',
+        description: 'Não foi possível sincronizar com o Google Sheets.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSyncing(false);
+    }
+  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -94,10 +135,20 @@ export default function Coordenacao() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Painel de Coordenação</h2>
-          <Button variant="ghost" size="sm" onClick={logout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Sair
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleForceSync} disabled={isSyncing}>
+              {isSyncing ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <RefreshCw className="mr-2 h-4 w-4" />
+              )}
+              Sync Sheets
+            </Button>
+            <Button variant="ghost" size="sm" onClick={logout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Sair
+            </Button>
+          </div>
         </div>
 
         <Tabs defaultValue="pedidos" className="space-y-4">
