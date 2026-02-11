@@ -11,6 +11,8 @@ import { useAdmin } from '@/contexts/AdminContext';
 import { CoordPedidos } from '@/components/coordination/CoordPedidos';
 import { CoordOfertas } from '@/components/coordination/CoordOfertas';
 import { CoordMatches } from '@/components/coordination/CoordMatches';
+import { supabase } from '@/integrations/supabase/client';
+import { syncToGoogleSheets } from '@/lib/syncGoogleSheets';
 
 export default function Coordenacao() {
   const { isAdmin, login, logout } = useAdmin();
