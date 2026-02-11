@@ -135,10 +135,20 @@ export default function Coordenacao() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Painel de Coordenação</h2>
-          <Button variant="ghost" size="sm" onClick={logout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Sair
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleForceSync} disabled={isSyncing}>
+              {isSyncing ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <RefreshCw className="mr-2 h-4 w-4" />
+              )}
+              Sync Sheets
+            </Button>
+            <Button variant="ghost" size="sm" onClick={logout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Sair
+            </Button>
+          </div>
         </div>
 
         <Tabs defaultValue="pedidos" className="space-y-4">
