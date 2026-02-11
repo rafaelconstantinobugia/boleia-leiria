@@ -16,7 +16,7 @@ import {
 import { StatusBadge } from '@/components/ui/status-badge';
 import { useRideRequests } from '@/hooks/useRideRequests';
 import { REQUEST_STATUS, REQUEST_STATUS_LABELS, REQUEST_STATUS_COLORS, SPECIAL_NEEDS_OPTIONS } from '@/lib/constants';
-import { maskName, maskPhone } from '@/lib/validation';
+import { maskName } from '@/lib/validation';
 
 export default function Pedidos() {
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -103,9 +103,8 @@ export default function Pedidos() {
                         <CardTitle className="text-base">
                           {maskName(request.requester_name)}
                         </CardTitle>
-                        <CardDescription>
-                          {maskPhone(request.requester_phone)}
-                        </CardDescription>
+                      
+                        
                       </div>
                       <StatusBadge
                         status={request.status}

@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface AdminContextType {
   isAdmin: boolean;
+  adminPin: string | null;
   login: (pin: string) => Promise<boolean>;
   logout: () => void;
 }
@@ -11,6 +12,7 @@ const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 export function AdminProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminPin, setAdminPin] = useState<string | null>(null);
 
   const login = useCallback(async (pin: string): Promise<boolean> => {
     try {
@@ -25,6 +27,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
 
       if (data?.valid) {
         setIsAdmin(true);
+        setAdminPin(pin);
         return true;
       }
 
@@ -37,10 +40,11 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(() => {
     setIsAdmin(false);
+    setAdminPin(null);
   }, []);
 
   return (
-    <AdminContext.Provider value={{ isAdmin, login, logout }}>
+    <AdminContext.Provider value={{ isAdmin, adminPin, login, logout }}>
       {children}
     </AdminContext.Provider>
   );

@@ -13,7 +13,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { StatusBadge } from '@/components/ui/status-badge';
-import { useRideOffers } from '@/hooks/useRideOffers';
+import { useAdmin } from '@/contexts/AdminContext';
+import { useAdminRideOffers } from '@/hooks/useAdminData';
 import { 
   OFFER_STATUS_LABELS, 
   OFFER_STATUS_COLORS, 
@@ -23,10 +24,11 @@ import {
 } from '@/lib/constants';
 
 export function CoordOfertas() {
+  const { adminPin } = useAdmin();
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [search, setSearch] = useState('');
   
-  const { data: offers, isLoading } = useRideOffers({
+  const { data: offers, isLoading } = useAdminRideOffers(adminPin, {
     status: statusFilter,
     search: search.length > 2 ? search : undefined,
   });

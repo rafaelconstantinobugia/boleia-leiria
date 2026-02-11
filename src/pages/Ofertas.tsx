@@ -23,7 +23,7 @@ import {
   VEHICLE_TYPES,
   DISTANCE_LABELS 
 } from '@/lib/constants';
-import { maskName, maskPhone } from '@/lib/validation';
+import { maskName } from '@/lib/validation';
 
 export default function Ofertas() {
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -112,9 +112,8 @@ export default function Ofertas() {
                         <CardTitle className="text-base">
                           {maskName(offer.driver_name)}
                         </CardTitle>
-                        <CardDescription>
-                          {maskPhone(offer.driver_phone)}
-                        </CardDescription>
+                      
+                        
                       </div>
                       <StatusBadge
                         status={offer.status}

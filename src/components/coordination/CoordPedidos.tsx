@@ -13,26 +13,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { StatusBadge } from '@/components/ui/status-badge';
-import { useRideRequests } from '@/hooks/useRideRequests';
+import { useAdmin } from '@/contexts/AdminContext';
+import { useAdminRideRequests } from '@/hooks/useAdminData';
 import { useCompatibleOffers } from '@/hooks/useRideOffers';
 import { REQUEST_STATUS_LABELS, REQUEST_STATUS_COLORS, SPECIAL_NEEDS_OPTIONS } from '@/lib/constants';
 import { MatchDialog } from './MatchDialog';
 
 export function CoordPedidos() {
+  const { adminPin } = useAdmin();
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [search, setSearch] = useState('');
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [showMatchDialog, setShowMatchDialog] = useState(false);
   
-  const { data: requests, isLoading } = useRideRequests({
+  const { data: requests, isLoading } = useAdminRideRequests(adminPin, {
     status: statusFilter,
     search: search.length > 2 ? search : undefined,
   });

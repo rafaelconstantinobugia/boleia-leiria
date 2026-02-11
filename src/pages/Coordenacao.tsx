@@ -11,44 +11,34 @@ import { useAdmin } from '@/contexts/AdminContext';
 import { CoordPedidos } from '@/components/coordination/CoordPedidos';
 import { CoordOfertas } from '@/components/coordination/CoordOfertas';
 import { CoordMatches } from '@/components/coordination/CoordMatches';
-import { supabase } from '@/integrations/supabase/client';
-import { syncToGoogleSheets } from '@/lib/syncGoogleSheets';
+import { bulkSyncToSheets } from '@/lib/syncGoogleSheets';
 
 export default function Coordenacao() {
-  const { isAdmin, login, logout } = useAdmin();
+  const { isAdmin, adminPin, login, logout } = useAdmin();
   const { toast } = useToast();
   const [pin, setPin] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  async function handleForceSync() {
+  async function handleBulkSync() {
+    if (!adminPin) return;
     setIsSyncing(true);
     try {
-      // Fetch all offers and requests
-      const [offersRes, requestsRes] = await Promise.all([
-        supabase.from('ride_offers_public').select('*'),
-        supabase.from('ride_requests_public').select('*'),
-      ]);
-
-      if (offersRes.error) throw offersRes.error;
-      if (requestsRes.error) throw requestsRes.error;
-
-      const promises: Promise<void>[] = [];
-      for (const offer of offersRes.data || []) {
-        promises.push(syncToGoogleSheets('offer', offer as Record<string, unknown>));
+      const result = await bulkSyncToSheets(adminPin);
+      if (result.success) {
+        const { requests = 0, offers = 0, matches = 0 } = result.synced || {};
+        toast({
+          title: 'Sincronização concluída',
+          description: `${requests} pedido(s), ${offers} oferta(s) e ${matches} match(es) sincronizados.`,
+        });
+      } else {
+        toast({
+          title: 'Erro na sincronização',
+          description: result.error || 'Falha na ligação ao Sheets.',
+          variant: 'destructive',
+        });
       }
-      for (const request of requestsRes.data || []) {
-        promises.push(syncToGoogleSheets('request', request as Record<string, unknown>));
-      }
-
-      await Promise.all(promises);
-
-      toast({
-        title: 'Sincronização concluída',
-        description: `${offersRes.data?.length || 0} ofertas e ${requestsRes.data?.length || 0} pedidos sincronizados.`,
-      });
     } catch (error) {
-      console.error('Sync error:', error);
       toast({
         title: 'Erro na sincronização',
         description: 'Não foi possível sincronizar com o Google Sheets.',
@@ -136,7 +126,7 @@ export default function Coordenacao() {
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Painel de Coordenação</h2>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={handleForceSync} disabled={isSyncing}>
+            <Button variant="outline" size="sm" onClick={handleBulkSync} disabled={isSyncing}>
               {isSyncing ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (

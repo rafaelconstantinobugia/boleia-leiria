@@ -14,14 +14,17 @@ import {
 } from '@/components/ui/select';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { useToast } from '@/hooks/use-toast';
-import { useMatches, useUpdateMatchStatus } from '@/hooks/useMatches';
+import { useAdmin } from '@/contexts/AdminContext';
+import { useAdminMatches } from '@/hooks/useAdminData';
+import { useUpdateMatchStatus } from '@/hooks/useMatches';
 import { MATCH_STATUS_LABELS, MATCH_STATUS_COLORS, VEHICLE_TYPES } from '@/lib/constants';
 
 export function CoordMatches() {
   const { toast } = useToast();
+  const { adminPin } = useAdmin();
   const [statusFilter, setStatusFilter] = useState('ALL');
   
-  const { data: matches, isLoading } = useMatches({
+  const { data: matches, isLoading } = useAdminMatches(adminPin, {
     status: statusFilter,
   });
 
@@ -61,7 +64,7 @@ ${request.requester_name}
 🚙 *Condutor:*
 ${offer.driver_name}
 📱 ${offer.driver_phone}
-${VEHICLE_TYPES.find((v) => v.value === offer.vehicle_type)?.label || offer.vehicle_type}
+${VEHICLE_TYPES.find((v: any) => v.value === offer.vehicle_type)?.label || offer.vehicle_type}
 
 📅 *Janela Temporal:*
 ${format(new Date(request.window_start), "d 'de' MMMM 'às' HH:mm", { locale: pt })}
@@ -118,7 +121,7 @@ Coordenação: ${match.coordinator_name} (${match.coordinator_phone})`;
         </div>
       ) : (
         <div className="space-y-4">
-          {matches?.map((match) => {
+          {matches?.map((match: any) => {
             const request = match.ride_requests;
             const offer = match.ride_offers;
             const vehicleLabel = VEHICLE_TYPES.find((v) => v.value === offer.vehicle_type)?.label || offer.vehicle_type;

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { syncToGoogleSheets } from '@/lib/syncGoogleSheets';
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
 type Match = Tables<'matches'>;
@@ -109,6 +110,30 @@ export function useUpdateMatchStatus() {
       if (status === 'CONFIRMED') {
         await supabase.from('ride_requests').update({ status: 'CONFIRMED' }).eq('id', match.request_id);
         await supabase.from('ride_offers').update({ status: 'RESERVED' }).eq('id', match.offer_id);
+
+        // Sync match to Google Sheets (fetch request for zone/window data)
+        const { data: requestData } = await supabase
+          .from('ride_requests_public')
+          .select('*')
+          .eq('id', match.request_id)
+          .single();
+
+        if (requestData) {
+          syncToGoogleSheets('match', {
+            id: matchId,
+            match_id: matchId,
+            request_id: match.request_id,
+            offer_id: match.offer_id,
+            created_at: new Date().toISOString(),
+            zone_from: requestData.pickup_location_text || '',
+            zone_to: requestData.dropoff_location_text || '',
+            window_start: requestData.window_start || '',
+            window_end: requestData.window_end || '',
+            passengers: requestData.passengers,
+            special_needs: requestData.special_needs,
+            status: 'CONFIRMED',
+          });
+        }
       } else if (status === 'DONE') {
         await supabase.from('ride_requests').update({ status: 'DONE' }).eq('id', match.request_id);
         await supabase.from('ride_offers').update({ status: 'DONE' }).eq('id', match.offer_id);

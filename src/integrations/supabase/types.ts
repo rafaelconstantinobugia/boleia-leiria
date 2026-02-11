@@ -118,6 +118,7 @@ export type Database = {
           id: string
           notes: string | null
           seats_available: number
+          sheets_synced_at: string | null
           status: Database["public"]["Enums"]["offer_status"]
           time_window_end: string
           time_window_start: string
@@ -135,6 +136,7 @@ export type Database = {
           id?: string
           notes?: string | null
           seats_available?: number
+          sheets_synced_at?: string | null
           status?: Database["public"]["Enums"]["offer_status"]
           time_window_end: string
           time_window_start: string
@@ -152,6 +154,7 @@ export type Database = {
           id?: string
           notes?: string | null
           seats_available?: number
+          sheets_synced_at?: string | null
           status?: Database["public"]["Enums"]["offer_status"]
           time_window_end?: string
           time_window_start?: string
@@ -176,6 +179,7 @@ export type Database = {
           pickup_location_text: string
           requester_name: string
           requester_phone: string
+          sheets_synced_at: string | null
           special_needs: string[] | null
           status: Database["public"]["Enums"]["request_status"]
           updated_at: string
@@ -197,6 +201,7 @@ export type Database = {
           pickup_location_text: string
           requester_name: string
           requester_phone: string
+          sheets_synced_at?: string | null
           special_needs?: string[] | null
           status?: Database["public"]["Enums"]["request_status"]
           updated_at?: string
@@ -218,6 +223,7 @@ export type Database = {
           pickup_location_text?: string
           requester_name?: string
           requester_phone?: string
+          sheets_synced_at?: string | null
           special_needs?: string[] | null
           status?: Database["public"]["Enums"]["request_status"]
           updated_at?: string
@@ -251,7 +257,6 @@ export type Database = {
           created_at: string | null
           departure_area_text: string | null
           driver_name: string | null
-          driver_phone: string | null
           equipment: string[] | null
           id: string | null
           notes: string | null
@@ -269,7 +274,6 @@ export type Database = {
           created_at?: string | null
           departure_area_text?: string | null
           driver_name?: string | null
-          driver_phone?: string | null
           equipment?: string[] | null
           id?: string | null
           notes?: string | null
@@ -287,7 +291,6 @@ export type Database = {
           created_at?: string | null
           departure_area_text?: string | null
           driver_name?: string | null
-          driver_phone?: string | null
           equipment?: string[] | null
           id?: string | null
           notes?: string | null
@@ -314,7 +317,6 @@ export type Database = {
           pickup_lng: number | null
           pickup_location_text: string | null
           requester_name: string | null
-          requester_phone: string | null
           special_needs: string[] | null
           status: Database["public"]["Enums"]["request_status"] | null
           updated_at: string | null
@@ -334,7 +336,6 @@ export type Database = {
           pickup_lng?: number | null
           pickup_location_text?: string | null
           requester_name?: string | null
-          requester_phone?: string | null
           special_needs?: string[] | null
           status?: Database["public"]["Enums"]["request_status"] | null
           updated_at?: string | null
@@ -354,7 +355,6 @@ export type Database = {
           pickup_lng?: number | null
           pickup_location_text?: string | null
           requester_name?: string | null
-          requester_phone?: string | null
           special_needs?: string[] | null
           status?: Database["public"]["Enums"]["request_status"] | null
           updated_at?: string | null
