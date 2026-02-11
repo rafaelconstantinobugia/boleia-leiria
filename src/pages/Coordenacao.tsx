@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Loader2, Lock, LogOut } from 'lucide-react';
+import { Loader2, Lock, LogOut, RefreshCw } from 'lucide-react';
 
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Button } from '@/components/ui/button';
