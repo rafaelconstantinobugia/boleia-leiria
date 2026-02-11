@@ -71,6 +71,7 @@ export function useCreateRideOffer() {
         .single();
 
       if (error) throw error;
+      syncToGoogleSheets('offer', result as Record<string, unknown>);
       return result as RideOffer;
     },
     onSuccess: () => {
