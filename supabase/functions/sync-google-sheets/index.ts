@@ -41,14 +41,21 @@ async function fetchWithRetry(url: string, body: Record<string, unknown>, retrie
   throw lastError || new Error('fetchWithRetry failed')
 }
 
-function buildRequestPayload(record: Record<string, unknown>, apiKey: string, adminBaseUrl: string): Record<string, unknown> {
+function buildUnifiedPayload(
+  tipo: string,
+  record: Record<string, unknown>,
+  apiKey: string,
+  adminBaseUrl: string
+): Record<string, unknown> {
+  const tab = tipo === 'PEDIDO' ? 'pedidos' : tipo === 'OFERTA' ? 'ofertas' : 'matches'
   return {
     api_key: apiKey,
+    entity_id: String(record.id || ''),
+    tipo,
     created_at: record.created_at || new Date().toISOString(),
     updated_at: record.updated_at || '',
-    tipo: 'PEDIDO',
-    entity_id: record.id,
-    status: record.status || 'NEW',
+    status: record.status || '',
+    // Pedido fields
     requester_name: record.requester_name || '',
     requester_phone: record.requester_phone || '',
     zone_from: record.pickup_location_text || '',
@@ -57,25 +64,10 @@ function buildRequestPayload(record: Record<string, unknown>, apiKey: string, ad
     pickup_lng: record.pickup_lng ?? '',
     dropoff_lat: record.dropoff_lat ?? '',
     dropoff_lng: record.dropoff_lng ?? '',
-    window_start: record.window_start || '',
-    window_end: record.window_end || '',
     qty: record.passengers ?? '',
     needs: joinFlags(record.special_needs as string[] | null),
-    notes: record.notes || '',
     matched_offer_id: record.matched_offer_id || '',
-    source: 'lovable',
-    link: `${adminBaseUrl}/coordenacao?tab=pedidos&id=${record.id}`,
-  }
-}
-
-function buildOfferPayload(record: Record<string, unknown>, apiKey: string, adminBaseUrl: string): Record<string, unknown> {
-  return {
-    api_key: apiKey,
-    created_at: record.created_at || new Date().toISOString(),
-    updated_at: record.updated_at || '',
-    tipo: 'OFERTA',
-    entity_id: record.id,
-    status: record.status || 'AVAILABLE',
+    // Oferta fields
     driver_name: record.driver_name || '',
     driver_phone: record.driver_phone || '',
     departure_area: record.departure_area_text || '',
@@ -83,29 +75,17 @@ function buildOfferPayload(record: Record<string, unknown>, apiKey: string, admi
     seats_available: record.seats_available ?? '',
     can_go_distance: record.can_go_distance || '',
     equipment: joinFlags(record.equipment as string[] | null),
-    window_start: record.time_window_start || '',
-    window_end: record.time_window_end || '',
-    notes: record.notes || '',
-    source: 'lovable',
-    link: `${adminBaseUrl}/coordenacao?tab=ofertas&id=${record.id}`,
-  }
-}
-
-function buildMatchPayload(record: Record<string, unknown>, apiKey: string, adminBaseUrl: string): Record<string, unknown> {
-  return {
-    api_key: apiKey,
-    created_at: record.created_at || new Date().toISOString(),
-    updated_at: record.updated_at || '',
-    tipo: 'MATCH',
-    match_id: record.id,
+    // Match fields
     request_id: record.request_id || '',
     offer_id: record.offer_id || '',
-    status: record.status || 'PROPOSED',
     coordinator_name: record.coordinator_name || '',
     coordinator_phone: record.coordinator_phone || '',
+    // Common
+    window_start: record.window_start || record.time_window_start || '',
+    window_end: record.window_end || record.time_window_end || '',
     notes: record.notes || '',
     source: 'lovable',
-    link: `${adminBaseUrl}/coordenacao?tab=matches&id=${record.id}`,
+    link: `${adminBaseUrl}/coordenacao?tab=${tab}&id=${record.id}`,
   }
 }
 
