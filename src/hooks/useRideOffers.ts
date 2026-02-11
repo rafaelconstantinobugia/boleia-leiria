@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { normalizePhone } from '@/lib/validation';
+import { syncToGoogleSheets } from '@/lib/syncGoogleSheets';
 import type { Tables, TablesInsert, TablesUpdate } from '@/integrations/supabase/types';
 
 type RideOffer = Tables<'ride_offers'>;
