@@ -19,6 +19,45 @@ export default function Coordenacao() {
   const { toast } = useToast();
   const [pin, setPin] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  async function handleForceSync() {
+    setIsSyncing(true);
+    try {
+      // Fetch all offers and requests
+      const [offersRes, requestsRes] = await Promise.all([
+        supabase.from('ride_offers_public').select('*'),
+        supabase.from('ride_requests_public').select('*'),
+      ]);
+
+      if (offersRes.error) throw offersRes.error;
+      if (requestsRes.error) throw requestsRes.error;
+
+      const promises: Promise<void>[] = [];
+      for (const offer of offersRes.data || []) {
+        promises.push(syncToGoogleSheets('offer', offer as Record<string, unknown>));
+      }
+      for (const request of requestsRes.data || []) {
+        promises.push(syncToGoogleSheets('request', request as Record<string, unknown>));
+      }
+
+      await Promise.all(promises);
+
+      toast({
+        title: 'Sincronização concluída',
+        description: `${offersRes.data?.length || 0} ofertas e ${requestsRes.data?.length || 0} pedidos sincronizados.`,
+      });
+    } catch (error) {
+      console.error('Sync error:', error);
+      toast({
+        title: 'Erro na sincronização',
+        description: 'Não foi possível sincronizar com o Google Sheets.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSyncing(false);
+    }
+  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
