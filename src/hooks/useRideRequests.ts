@@ -98,6 +98,7 @@ export function useUpdateRideRequest() {
         .single();
 
       if (error) throw error;
+      syncToGoogleSheets('request', result as Record<string, unknown>);
       return result as RideRequest;
     },
     onSuccess: () => {
