@@ -164,7 +164,7 @@ Sugestão: ${match.coordinator_name} (${match.coordinator_phone})`;
 
                   {/* Coordenador */}
                   <div className="text-xs text-muted-foreground">
-                    Coordenador: {match.coordinator_name} ({match.coordinator_phone})
+                    Sugestão: {match.coordinator_name} ({match.coordinator_phone})
                   </div>
 
                   {/* Ações */}
