@@ -44,7 +44,7 @@ export function CoordMatches() {
     const request = match.ride_requests;
     const offer = match.ride_offers;
 
-    const message = `🚗 *Boleia Confirmada*
+    const message = `🚗 *Sugestão de Boleia Confirmada*
 
 📍 *Trajeto:*
 De: ${request.pickup_location_text}
