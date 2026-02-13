@@ -19,7 +19,7 @@ export function useRideRequests(filters?: {
       let query = supabase
         .from('ride_requests_public')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('window_start', { ascending: false });
 
       if (filters?.status && filters.status !== 'ALL') {
         query = query.eq('status', filters.status as 'NEW' | 'TRIAGE' | 'CONFIRMED' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED');

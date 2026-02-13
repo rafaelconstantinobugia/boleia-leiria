@@ -32,7 +32,7 @@ serve(async (req) => {
       let query = supabase
         .from('ride_requests')
         .select('id, requester_name, requester_phone, pickup_location_text, dropoff_location_text, pickup_lat, pickup_lng, dropoff_lat, dropoff_lng, passengers, special_needs, notes, status, window_start, window_end, matched_offer_id, created_at, updated_at')
-        .order('created_at', { ascending: false });
+        .order('window_start', { ascending: false });
 
       if (filters?.status && filters.status !== 'ALL') {
         query = query.eq('status', filters.status);
@@ -54,7 +54,7 @@ serve(async (req) => {
       let query = supabase
         .from('ride_offers')
         .select('id, driver_name, driver_phone, departure_area_text, vehicle_type, seats_available, can_go_distance, equipment, notes, status, time_window_start, time_window_end, created_at, updated_at')
-        .order('created_at', { ascending: false });
+        .order('time_window_start', { ascending: false });
 
       if (filters?.status && filters.status !== 'ALL') {
         query = query.eq('status', filters.status);
