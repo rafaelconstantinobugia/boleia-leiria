@@ -95,8 +95,31 @@ serve(async (req) => {
       );
     }
 
+    if (type === 'update_status') {
+      const { entity_type, entity_id, new_status } = filters || {};
+      if (!entity_type || !entity_id || !new_status) {
+        return new Response(
+          JSON.stringify({ error: 'entity_type, entity_id e new_status são obrigatórios' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      const table = entity_type === 'request' ? 'ride_requests' : 'ride_offers';
+      const { error } = await supabase
+        .from(table)
+        .update({ status: new_status, updated_at: new Date().toISOString() })
+        .eq('id', entity_id);
+
+      if (error) throw error;
+
+      return new Response(
+        JSON.stringify({ success: true }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     return new Response(
-      JSON.stringify({ error: 'Tipo inválido. Use: requests, offers, matches' }),
+      JSON.stringify({ error: 'Tipo inválido. Use: requests, offers, matches, update_status' }),
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {

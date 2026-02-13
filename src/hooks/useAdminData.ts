@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { Tables } from '@/integrations/supabase/types';
 
@@ -61,5 +61,31 @@ export function useAdminMatches(pin: string | null, filters?: {
       return response.data?.data;
     },
     enabled: !!pin,
+  });
+}
+
+export function useUpdateStatus(pin: string | null) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ entityType, entityId, newStatus }: {
+      entityType: 'request' | 'offer';
+      entityId: string;
+      newStatus: string;
+    }) => {
+      const response = await supabase.functions.invoke('get-admin-data', {
+        body: {
+          pin,
+          type: 'update_status',
+          filters: { entity_type: entityType, entity_id: entityId, new_status: newStatus },
+        },
+      });
+      if (response.error) throw response.error;
+      if (response.data?.error) throw new Error(response.data.error);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin_ride_requests'] });
+      queryClient.invalidateQueries({ queryKey: ['admin_ride_offers'] });
+    },
   });
 }
