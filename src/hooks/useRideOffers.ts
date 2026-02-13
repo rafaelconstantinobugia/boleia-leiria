@@ -19,7 +19,7 @@ export function useRideOffers(filters?: {
       let query = supabase
         .from('ride_offers_public')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('time_window_start', { ascending: false });
 
       if (filters?.status && filters.status !== 'ALL') {
         query = query.eq('status', filters.status as 'AVAILABLE' | 'RESERVED' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED');
