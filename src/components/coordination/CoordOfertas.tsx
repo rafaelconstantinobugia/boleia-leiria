@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
-import { Search, Car, MapPin, Clock, Phone, Loader2 } from 'lucide-react';
+import { Search, Car, MapPin, Clock, Phone, Loader2, Archive } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Select,
@@ -14,7 +16,8 @@ import {
 } from '@/components/ui/select';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { useAdmin } from '@/contexts/AdminContext';
-import { useAdminRideOffers } from '@/hooks/useAdminData';
+import { useAdminRideOffers, useUpdateStatus } from '@/hooks/useAdminData';
+import { useToast } from '@/hooks/use-toast';
 import { 
   OFFER_STATUS_LABELS, 
   OFFER_STATUS_COLORS, 
@@ -27,6 +30,8 @@ export function CoordOfertas() {
   const { adminPin } = useAdmin();
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [search, setSearch] = useState('');
+  const { toast } = useToast();
+  const updateStatus = useUpdateStatus(adminPin);
   
   const { data: offers, isLoading } = useAdminRideOffers(adminPin, {
     status: statusFilter,
@@ -139,6 +144,27 @@ export function CoordOfertas() {
                     <p className="text-xs text-muted-foreground italic">
                       "{offer.notes}"
                     </p>
+                  )}
+
+                  {offer.status !== 'DONE' && offer.status !== 'CANCELLED' && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full mt-2"
+                      onClick={() => {
+                        updateStatus.mutate(
+                          { entityType: 'offer', entityId: offer.id, newStatus: 'DONE' },
+                          {
+                            onSuccess: () => toast({ title: 'Oferta arquivada' }),
+                            onError: () => toast({ title: 'Erro ao arquivar', variant: 'destructive' }),
+                          }
+                        );
+                      }}
+                      disabled={updateStatus.isPending}
+                    >
+                      <Archive className="mr-2 h-4 w-4" />
+                      Arquivar
+                    </Button>
                   )}
                 </CardContent>
               </Card>

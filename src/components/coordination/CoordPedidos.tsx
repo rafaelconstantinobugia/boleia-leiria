@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
-import { Search, Users, MapPin, Clock, Phone, Loader2, Link2 } from 'lucide-react';
+import { Search, Users, MapPin, Clock, Phone, Loader2, Link2, Archive } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -15,10 +16,11 @@ import {
 } from '@/components/ui/select';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { useAdmin } from '@/contexts/AdminContext';
-import { useAdminRideRequests } from '@/hooks/useAdminData';
+import { useAdminRideRequests, useUpdateStatus } from '@/hooks/useAdminData';
 import { useCompatibleOffers } from '@/hooks/useRideOffers';
 import { REQUEST_STATUS_LABELS, REQUEST_STATUS_COLORS, SPECIAL_NEEDS_OPTIONS } from '@/lib/constants';
 import { MatchDialog } from './MatchDialog';
+import { useToast } from '@/hooks/use-toast';
 
 export function CoordPedidos() {
   const { adminPin } = useAdmin();
@@ -26,6 +28,8 @@ export function CoordPedidos() {
   const [search, setSearch] = useState('');
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [showMatchDialog, setShowMatchDialog] = useState(false);
+  const { toast } = useToast();
+  const updateStatus = useUpdateStatus(adminPin);
   
   const { data: requests, isLoading } = useAdminRideRequests(adminPin, {
     status: statusFilter,
@@ -141,19 +145,40 @@ export function CoordPedidos() {
                     </p>
                   )}
 
-                  {request.status === 'NEW' || request.status === 'TRIAGE' ? (
-                    <Button
-                      size="sm"
-                      className="w-full mt-2"
-                      onClick={() => {
-                        setSelectedRequestId(request.id);
-                        setShowMatchDialog(true);
-                      }}
-                    >
-                      <Link2 className="mr-2 h-4 w-4" />
-                      Propor Match
-                    </Button>
-                  ) : null}
+                  <div className="flex gap-2 mt-2">
+                    {(request.status === 'NEW' || request.status === 'TRIAGE') && (
+                      <Button
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => {
+                          setSelectedRequestId(request.id);
+                          setShowMatchDialog(true);
+                        }}
+                      >
+                        <Link2 className="mr-2 h-4 w-4" />
+                        Propor Match
+                      </Button>
+                    )}
+                    {request.status !== 'DONE' && request.status !== 'CANCELLED' && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          updateStatus.mutate(
+                            { entityType: 'request', entityId: request.id, newStatus: 'DONE' },
+                            {
+                              onSuccess: () => toast({ title: 'Pedido arquivado' }),
+                              onError: () => toast({ title: 'Erro ao arquivar', variant: 'destructive' }),
+                            }
+                          );
+                        }}
+                        disabled={updateStatus.isPending}
+                      >
+                        <Archive className="mr-2 h-4 w-4" />
+                        Arquivar
+                      </Button>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             );
