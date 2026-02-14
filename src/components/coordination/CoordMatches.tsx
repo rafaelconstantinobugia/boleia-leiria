@@ -44,7 +44,7 @@ export function CoordMatches() {
     const request = match.ride_requests;
     const offer = match.ride_offers;
 
-    const message = `🚗 *Sugestão de Boleia Confirmada*
+    const message = `🚗 *Sugestão de Boleia*
 
 📍 *Trajeto:*
 De: ${request.pickup_location_text}
@@ -63,6 +63,7 @@ ${VEHICLE_TYPES.find((v: any) => v.value === offer.vehicle_type)?.label || offer
 📅 *Janela Temporal:*
 ${format(new Date(request.window_start), "d 'de' MMMM 'às' HH:mm", { locale: pt })}
 
+https://boleia-leiria.lovable.app
 Sugestão: ${match.coordinator_name} (${match.coordinator_phone})`;
 
     return message;
