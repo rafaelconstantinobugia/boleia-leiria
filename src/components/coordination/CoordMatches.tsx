@@ -63,8 +63,9 @@ ${VEHICLE_TYPES.find((v: any) => v.value === offer.vehicle_type)?.label || offer
 📅 *Janela Temporal:*
 ${format(new Date(request.window_start), "d 'de' MMMM 'às' HH:mm", { locale: pt })}
 
-https://boleia-leiria.lovable.app
-Sugestão: ${match.coordinator_name} (${match.coordinator_phone})`;
+Sugestão: ${match.coordinator_name}
+
+https://boleia-leiria.lovable.app `;
 
     return message;
   }
